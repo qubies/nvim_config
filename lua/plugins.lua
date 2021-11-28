@@ -17,7 +17,7 @@ return require('packer').startup(function()
 
 
   -- Auto pairs, but less agressive, only on enter.
-  use 'rstacruz/vim-closer'
+  use 'jiangmiao/auto-pairs'
 
   -- This changes % matcher to work with if else and wile
   use {'andymass/vim-matchup', event = 'VimEnter'}
@@ -33,7 +33,9 @@ return require('packer').startup(function()
   }
 
   -- Post-install/update hook with neovim command
-  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
+  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate',
+        'nvim-treesitter/nvim-treesitter-textobjects'
+      }
 
   -- statusline 
   use {
@@ -47,7 +49,6 @@ return require('packer').startup(function()
     config = function() require('gitsigns').setup() end
   }
 
-  -- You can alias plugin names
   use {'dracula/vim', as = 'dracula'}
 
   -- file finder and preview
@@ -61,5 +62,25 @@ return require('packer').startup(function()
   }
   vim.cmd 'colorscheme iceberg'
 
+  use {
+  	'machakann/vim-sandwich',
+	'terrortylor/nvim-comment'
+  	  }
+	  require('nvim_comment').setup(
+{
+  -- Linters prefer comment and line to have a space in between markers
+  marker_padding = true,
+  -- should comment out empty or whitespace only lines
+  comment_empty = true,
+  -- Should key mappings be created
+  create_mappings = true,
+  -- Normal mode mapping left hand side
+  line_mapping = "gcc",
+  -- Visual/Operator mapping left hand side
+  operator_mapping = "gc",
+  -- Hook function to call before commenting takes place
+  hook = nil
+}
+	  )
 
 end)
