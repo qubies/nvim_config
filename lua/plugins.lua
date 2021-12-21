@@ -24,6 +24,17 @@ return require('packer').startup(function()
   -- This changes % matcher to work with if else and wile
   use {'andymass/vim-matchup', event = 'VimEnter'}
 
+  use {
+  "folke/which-key.nvim",
+  config = function()
+    require("which-key").setup {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    }
+  end
+}
+
   -- Load on a combination of conditions: specific filetypes or commands
   -- Also run code after load (see the "config" key)
   -- a linter ale.
