@@ -20,6 +20,7 @@ o.undodir = '/home/renwickt/.undodir'
 -- window-local options
 wo.number = true
 wo.wrap = true
+wo.foldmethod = 'marker'
 
 -- buffer-local options
 bo.expandtab = true
@@ -45,14 +46,17 @@ function create_augroup(name, autocmds)
     cmd('augroup END')
 end
 
-function HighlightNone()
-    hi("Normal", {ctermbg = "NONE", guibg = "NONE"})
+function Highlights()
     hi("Visual", {ctermbg = "yellow", ctermfg="black"})
+    hi("Normal", {ctermbg = "none", guibg = "none"})
+    hi("NonText", {ctermbg = "none"})
 end
 
-create_augroup("HighlightNone", {
-    {"ColorScheme", "*", "lua HighlightNone()"}
+create_augroup("Highlights", {
+    {"ColorScheme", "*", "lua Highlights()"}
 })
+
+vim.cmd 'colorscheme iceberg'
 
 g.python3_host_prog = '/home/renwickt/.pyenv/shims/python'
 

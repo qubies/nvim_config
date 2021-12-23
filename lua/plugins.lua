@@ -73,7 +73,6 @@ return require('packer').startup(function()
   use {
   	'cocopon/iceberg.vim'
   }
-  vim.cmd 'colorscheme iceberg'
 
   use {
   	'machakann/vim-sandwich',
