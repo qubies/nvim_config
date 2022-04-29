@@ -27,54 +27,68 @@ bo.expandtab = true
 bo.expandtab = true
 bo.undofile = true
 
--- transparent background ... why it requires all this is pretty dum...
-function hi(group, opts)
-	local c = "highlight " .. group
-	for k, v in pairs(opts) do
-		c = c .. " " .. k .. "=" .. v
-	end
-	vim.cmd(c)
-end
-
-function create_augroup(name, autocmds)
-    cmd = vim.cmd
-    cmd('augroup ' .. name)
-    cmd('autocmd!')
-    for _, autocmd in ipairs(autocmds) do
-        cmd('autocmd ' .. table.concat(autocmd, ' '))
-    end
-    cmd('augroup END')
-end
-
-function Highlights()
-    hi("Visual", {ctermbg = "yellow", ctermfg="black"})
-    hi("Normal", {ctermbg = "none", guibg = "none"})
-    hi("NonText", {ctermbg = "none"})
-end
-
-create_augroup("Highlights", {
-    {"ColorScheme", "*", "lua Highlights()"}
+local catppuccin = require("catppuccin")
+catppuccin.setup({
+transparent_background = true,
+term_colors = false,
+styles = {
+	comments = "italic",
+	functions = "italic",
+	keywords = "italic",
+	strings = "NONE",
+	variables = "italic",
+},
+integrations = {
+	treesitter = true,
+	native_lsp = {
+		enabled = true,
+		virtual_text = {
+			errors = "italic",
+			hints = "italic",
+			warnings = "italic",
+			information = "italic",
+		},
+		underlines = {
+			errors = "underline",
+			hints = "underline",
+			warnings = "underline",
+			information = "underline",
+		},
+	},
+	lsp_trouble = false,
+	cmp = true,
+	lsp_saga = false,
+	gitgutter = false,
+	gitsigns = true,
+	telescope = true,
+	nvimtree = {
+		enabled = true,
+		show_root = false,
+		transparent_panel = true,
+	},
+	neotree = {
+		enabled = false,
+		show_root = false,
+		transparent_panel = true,
+	},
+	which_key = true,
+	indent_blankline = {
+		enabled = true,
+		colored_indent_levels = false,
+	},
+	dashboard = true,
+	neogit = false,
+	vim_sneak = false,
+	fern = false,
+	barbar = false,
+	bufferline = true,
+	markdown = true,
+	lightspeed = true,
+	ts_rainbow = false,
+	hop = false,
+	notify = true,
+	telekasten = true,
+}
 })
-
-vim.cmd 'colorscheme iceberg'
-
-g.python3_host_prog = '/home/renwickt/.pyenv/shims/python'
-
--- repl
-local iron = require('iron')
-
-iron.core.add_repl_definitions {
-  python = {
-    mycustom = {
-      command = {"python -i"}
-    }
-  },
-}
-
-iron.core.set_config {
-  preferred = {
-    python = "ipython",
-    clojure = "lein"
-  }
-}
--- g.python3_host_prog = '/usr/bin/python'
+vim.cmd[[colorscheme catppuccin]]
+g.python3_host_prog = 'python3'

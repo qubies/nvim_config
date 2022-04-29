@@ -1,8 +1,11 @@
 local nvim_lsp = require('lspconfig')
 
-local on_attach = function(_, bufnr)
+local on_attach = function(client, bufnr)
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-  vim.cmd [[ command! Format execute 'lua vim.lsp.buf.formatting()' ]]
+  -- vim.cmd [[ command! Format execute 'lua vim.lsp.buf.formatting()' ]]
+  -- if client.resolved_capabilities.document_formatting then
+  --   vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()")
+  -- end
 end
 
 -- Add additional capabilities supported by nvim-cmp
@@ -41,16 +44,16 @@ require'lspconfig'.sumneko_lua.setup {
 }
 
 -- Enable some language servers with the additional completion capabilities offered by nvim-cmp
-local servers = { 'clangd', 'gopls', 'rust_analyzer', 'tsserver', 'pylsp' }
-for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup {
-    on_attach = on_attach,
-    capabilities = capabilities,
-    init_options = {
-      provideFormatter = true
-    }
-  }
-end
+-- local servers = { 'clangd', 'gopls', 'rust_analyzer', 'tsserver', 'pylsp',}
+-- for _, lsp in ipairs(servers) do
+--   nvim_lsp[lsp].setup {
+--     on_attach = on_attach,
+--     capabilities = capabilities,
+--     init_options = {
+--       provideFormatter = true
+--     }
+--   }
+-- end
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
@@ -102,3 +105,56 @@ cmp.setup {
     { name = 'luasnip' },
   },
 }
+
+local utils = require "utils"
+local M = {}
+
+local format_disabled_var = function()
+    return string.format("format_disabled_%s", vim.bo.filetype)
+end
+local format_options_var = function()
+    return string.format("format_options_%s", vim.bo.filetype)
+end
+
+local format_options_prettier = {
+    tabWidth = 4,
+    singleQuote = true,
+    trailingComma = "all",
+    configPrecedence = "prefer-file",
+}
+vim.g.format_options_typescript = format_options_prettier
+vim.g.format_options_javascript = format_options_prettier
+vim.g.format_options_typescriptreact = format_options_prettier
+vim.g.format_options_javascriptreact = format_options_prettier
+vim.g.format_options_json = format_options_prettier
+vim.g.format_options_css = format_options_prettier
+vim.g.format_options_scss = format_options_prettier
+vim.g.format_options_html = format_options_prettier
+vim.g.format_options_python = format_options_prettier
+vim.g.format_options_yaml = format_options_prettier
+vim.g.format_options_yaml = {
+    tabWidth = 2,
+    singleQuote = true,
+    trailingComma = "all",
+    configPrecedence = "prefer-file",
+}
+vim.g.format_options_markdown = format_options_prettier
+vim.g.format_options_sh = {
+    tabWidth = 4,
+}
+
+M.formatToggle = function(value)
+    local var = format_disabled_var()
+    vim.g[var] = utils._if(value ~= nil, value, not vim.g[var])
+end
+vim.cmd [[command! FormatDisable lua require'lsp.formatting'.formatToggle(true)]]
+vim.cmd [[command! FormatEnable lua require'lsp.formatting'.formatToggle(false)]]
+
+M.format = function()
+    if not vim.b.saving_format and not vim.g[format_disabled_var()] then
+        vim.b.init_changedtick = vim.b.changedtick
+        vim.lsp.buf.formatting(vim.g[format_options_var()] or {})
+    end
+end
+
+return M

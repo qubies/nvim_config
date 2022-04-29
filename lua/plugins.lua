@@ -3,23 +3,113 @@
 -- Only required if you have packer configured as `opt`
 vim.cmd [[packadd packer.nvim]]
 
+
 return require('packer').startup(function()
   -- Packer can manage itself
-  use 'wbthomason/packer.nvim'
+  use {
+  'wbthomason/packer.nvim',
+  'tpope/vim-repeat',
+  'tpope/vim-surround',
+  'tommcdo/vim-exchange',
+  
+  'Matt-A-Bennett/vim-surround-funk',
 
   -- lsp support
-  use 'neovim/nvim-lspconfig'
+  'neovim/nvim-lspconfig',
+  'williamboman/nvim-lsp-installer',
   -- and autocomplete....
-  use 'hrsh7th/nvim-cmp' -- Autocompletion plugin
-  use 'hrsh7th/cmp-nvim-lsp' -- LSP source for nvim-cmp
-  use 'saadparwaiz1/cmp_luasnip' -- Snippets source for nvim-cmp
-  use 'L3MON4D3/LuaSnip' -- Snippets plugin
-  use 'jupyter-vim/jupyter-vim' -- jupyter
-  use 'hkupty/iron.nvim' -- repl
+  'hrsh7th/nvim-cmp', -- Autocompletion plugin
+  'hrsh7th/cmp-nvim-lsp', -- LSP source for nvim-cmp
+  'saadparwaiz1/cmp_luasnip', -- Snippets source for nvim-cmp
+  'L3MON4D3/LuaSnip', -- Snippets plugin
+  'jupyter-vim/jupyter-vim', -- jupyter
+  'hkupty/iron.nvim', -- repl
+  'ray-x/lsp_signature.nvim',
+
+  'mhartington/formatter.nvim',
+  'lervag/vimtex',
+  }
+  use {'RRethy/vim-hexokinase', run = 'make hexokinase'}
+  
+  require "lsp_signature".setup()
+  local lsp_installer = require("nvim-lsp-installer")
+
+  use({
+	"catppuccin/nvim",
+	as = "catppuccin"
+})
+
+use {
+  'lewis6991/gitsigns.nvim',
+  requires = {
+    'nvim-lua/plenary.nvim'
+  },
+  -- tag = 'release' -- To use the latest release
+}
+
+require('gitsigns').setup()
+
+-- Register a handler that will be called for all installed servers.
+-- Alternatively, you may also register handlers on specific server instances instead (see example below).
+lsp_installer.on_server_ready(function(server)
+    local opts = {}
+
+    -- (optional) Customize the options passed to the server
+    -- if server.name == "tsserver" then
+    --     opts.root_dir = function() ... end
+    -- end
+
+    -- This setup() function is exactly the same as lspconfig's setup function.
+    -- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+    server:setup(opts)
+end)
+  require('formatter').setup({
+  filetype = {
+    python = {
+      -- Configuration for psf/black
+      function()
+        return {
+          exe = "black", -- this should be available on your $PATH
+          args = { '-' },
+          stdin = true,
+        }
+      end
+    },
+    sh = {
+        -- Shell Script Formatter
+       function()
+         return {
+           exe = "shfmt",
+           args = { "-i", 2 },
+           stdin = true,
+         }
+       end,
+   },
+    rust = {
+      -- Rustfmt
+      function()
+        return {
+          exe = "rustfmt",
+          args = {"--emit=stdout"},
+          stdin = true
+        }
+      end
+    },
+  }
+})
+
+
+vim.api.nvim_exec([[
+augroup FormatAutogroup
+  autocmd!
+  autocmd BufWritePost *.py,*.js,*.rs FormatWrite
+augroup END
+]], true)
+
 
 
   -- Auto pairs, but less agressive, only on enter.
-  use 'jiangmiao/auto-pairs'
+  -- use 'jiangmiao/auto-pairs'
 
   -- This changes % matcher to work with if else and wile
   use {'andymass/vim-matchup', event = 'VimEnter'}
@@ -38,12 +128,12 @@ return require('packer').startup(function()
   -- Load on a combination of conditions: specific filetypes or commands
   -- Also run code after load (see the "config" key)
   -- a linter ale.
-  use {
-    'w0rp/ale',
-    ft = {'sh', 'zsh', 'bash', 'c', 'cpp', 'cmake', 'html', 'markdown', 'racket', 'vim', 'tex'},
-    cmd = 'ALEEnable',
-    config = 'vim.cmd[[ALEEnable]]'
-  }
+  -- use {
+  --   'w0rp/ale',
+  --   ft = {'sh', 'zsh', 'bash', 'c', 'cpp', 'cmake', 'html', 'markdown', 'racket', 'vim', 'tex'},
+  --   cmd = 'ALEEnable',
+  --   config = 'vim.cmd[[ALEEnable]]'
+  -- }
 
   -- Post-install/update hook with neovim command
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate',
@@ -56,14 +146,6 @@ return require('packer').startup(function()
   requires = {'kyazdani42/nvim-web-devicons', opt = true}
   }
 
-  -- Use dependency and run lua function after load
-  use {
-    'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' },
-    config = function() require('gitsigns').setup() end
-  }
-
-  use {'dracula/vim', as = 'dracula'}
-
   -- file finder and preview
   use {
           'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim' },
@@ -73,9 +155,10 @@ return require('packer').startup(function()
   use {
   	'cocopon/iceberg.vim'
   }
+  use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
 
   use {
-  	'machakann/vim-sandwich',
+  	-- 'machakann/vim-sandwich',
 	'terrortylor/nvim-comment'
   	  }
 	  require('nvim_comment').setup(
@@ -95,4 +178,7 @@ return require('packer').startup(function()
 }
 	  )
 
+          use {
+  'ggandor/lightspeed.nvim', -- jumper
+  }
 end)
