@@ -1,22 +1,27 @@
 local nvim_lsp = require("lspconfig")
 
-local on_attach = function(client, bufnr)
-	vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
-	-- vim.cmd [[ command! Format execute 'lua vim.lsp.buf.formatting()' ]]
-	-- if client.resolved_capabilities.document_formatting then
-	--   vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()")
-	-- end
-end
+require("lspconfig").sumneko_lua.setup {}
+require("lspconfig").pyright.setup {}
+require("lspconfig").jedi_language_server.setup {}
+require("lspconfig").spectral_language_server.setup {}
+-- require("lspconfig").rust_analyzer.setup {}
+-- require("lspconfig").ltex.setup({})
+-- require("lspconfig").texlab.setup({})
+-- local on_attach = function(client, bufnr)
+-- 	vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
+-- 	-- vim.cmd [[ command! Format execute 'lua vim.lsp.buf.formatting()' ]]
+-- 	-- if client.resolved_capabilities.document_formatting then
+-- 	--   vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()")
+-- 	-- end
+-- end
 
 -- Add additional capabilities supported by nvim-cmp
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+-- local capabilities = vim.lsp.protocol.make_client_capabilities()
+-- capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
-local runtime_path = vim.split(package.path, ";")
+-- local runtime_path = vim.split(package.path, ";")
 -- table.insert(runtime_path, "lua/?.lua")
 -- table.insert(runtime_path, "lua/?/init.lua")
-require("lspconfig").ltex.setup({})
-require("lspconfig").texlab.setup({})
 -- require'lspconfig'.sumneko_lua.setup {
 --   settings = {
 --     Lua = {

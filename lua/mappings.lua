@@ -4,6 +4,7 @@ vim.api.nvim_set_keymap("o", "ie", [[<Cmd>exec "normal! ggVG"<CR>]], opts)
 
 -- disable stupid history
 vim.api.nvim_set_keymap("n", "q:", "<nop>", opts)
+vim.api.nvim_set_keymap("n", "Q", "<nop>", opts)
 
 -- telescope
 vim.api.nvim_set_keymap("n", "<Leader>ff", [[<Cmd>lua require('telescope.builtin').find_files()<CR>]], opts)

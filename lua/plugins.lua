@@ -6,7 +6,6 @@ vim.cmd([[packadd packer.nvim]])
 return require("packer").startup(function()
         -- Packer can manage itself
         use({
-                "hrsh7th/nvim-cmp",
                 "wbthomason/packer.nvim",
                 "tpope/vim-repeat",
                 "tpope/vim-surround",
@@ -15,25 +14,26 @@ return require("packer").startup(function()
                 "Matt-A-Bennett/vim-surround-funk",
 
                 -- lsp support
-                "williamboman/nvim-lsp-installer",
+		"williamboman/mason.nvim",
+                "williamboman/mason-lspconfig.nvim",
                 "neovim/nvim-lspconfig",
-                -- and autocomplete....
+                
+		-- and autocomplete....
                 "hrsh7th/nvim-cmp", -- Autocompletion plugin
                 "hrsh7th/cmp-nvim-lsp", -- LSP source for nvim-cmp
                 "saadparwaiz1/cmp_luasnip", -- Snippets source for nvim-cmp
                 "L3MON4D3/LuaSnip", -- Snippets plugin
-                "jupyter-vim/jupyter-vim", -- jupyter
-                "hkupty/iron.nvim", -- repl
                 "ray-x/lsp_signature.nvim",
 
                 "lervag/vimtex",
+		
+                "lewis6991/gitsigns.nvim",
+
+		--colors
                 "RRethy/vim-hexokinase",
                 run = "make hexokinase",
                 "catppuccin/nvim",
                 as = "catppuccin",
-                "lewis6991/gitsigns.nvim",
-                "andymass/vim-matchup",
-                event = "VimEnter",
                 "nvim-treesitter/nvim-treesitter",
                 run = ":TSUpdate",
                 "nvim-treesitter/nvim-treesitter-textobjects",
@@ -52,16 +52,12 @@ return require("packer").startup(function()
         require("which-key").setup({})
         require("yanky").setup({})
 	require("telescope").load_extension("yank_history")
+
+	require("mason").setup()
+	require("mason-lspconfig").setup()
         require("lsp_signature").setup()
-        local lsp_installer = require("nvim-lsp-installer")
 
         require("gitsigns").setup()
-
-        lsp_installer.on_server_ready(function(server)
-                local opts = {}
-
-                server:setup(opts)
-        end)
 
         require("nvim_comment").setup({
                 -- Linters prefer comment and line to have a space in between markers
